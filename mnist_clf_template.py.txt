@@ -86,7 +86,7 @@ def predict(image):
 
     layer_3_output = []
     for filter_len in range(0, 2):  # 2 times
-        output = np.zeros((12, 12), dtype=np.float32)
+        output = np.zeros((12, 12))
         for i in range(12):
             for j in range(12):
                 op_channel = np.zeros((3, 3))
