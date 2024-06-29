@@ -13,8 +13,11 @@ from adafruit_ov7670 import (  # pylint: disable=unused-import
     OV7670_SIZE_DIV16,
     OV7670_COLOR_YUV,
 )
-from mnist_clf import predict
+from mnist_clf import predict,validate
 
+print("Validating model ....")
+validate()
+print("Validation successful.")
 
 def ov7670_y2rgb565(yuv):
     y = yuv & 0xFF
@@ -86,8 +89,6 @@ cam.size = OV7670_SIZE_DIV16
 cam.colorspace = OV7670_COLOR_YUV
 cam.flip_y = False
 
- 
-print(cam.width,cam.height)
 width = cam.width
 mosi_pin = board.GP11
 clk_pin = board.GP10
@@ -134,7 +135,6 @@ while True:
     
     cam.capture(camera_image)
     time.sleep(0.1)
-    print(camera_image.width,camera_image.height)
     for i in range(0,camera_image.width):
         for j in range(0, camera_image.height):
             a = camera_image[i,j]
@@ -156,7 +156,7 @@ while True:
 
     ml_image[:,0] = 0
     ml_image = auto_crop_and_center(ml_image)
-    prediction,score = predict(ml_image)    
+    prediction,score,_ = predict(ml_image)    
     text_area.text=f"     p:{prediction}     " 
     print("  prediction:      ",prediction,"score:",score)   
     camera_image.dirty()
