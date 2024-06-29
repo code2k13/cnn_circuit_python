@@ -130,16 +130,11 @@ def validate():
 
         # Manually check if all elements are equal
         output_equal = True
-        for row in range(len(output)):
-            for col in range(len(output[row])):
-                if output[0][row][col] != expected_result[row][col]:
-                    output_equal = False
-                    break
-            if not output_equal:
+        for j in range(len(output)):
+            if output[j] != expected_result[j]:
+                output_equal = False
                 break
 
         assert output_equal, f"Validation failed for result_{i}"
-
-    print("Assertions passed successfully!")
 
     print("Assertions passed successfully!")
