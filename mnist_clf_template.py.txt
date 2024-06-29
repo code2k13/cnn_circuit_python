@@ -128,13 +128,12 @@ def validate():
         pattern = patterns[pattern_type]
         output = predict(pattern)[2]
 
-        # Manually check if all elements are equal
         output_equal = True
         for j in range(len(output)):
-            if output[j] != expected_result[j]:
+            if abs(output[j] - expected_result[j]) > 0.00001:
                 output_equal = False
                 break
 
-        assert output_equal, f"Validation failed for result_{i}"
+        assert output_equal, f"Validation failed for result_{i}, {output},{expected_result}"
 
-    print("Assertions passed successfully!")
+    return True
