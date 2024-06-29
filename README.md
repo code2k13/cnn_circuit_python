@@ -1,6 +1,9 @@
 # Running Convolutional Neural Networks on CircuitPython
 
 This repository contains code for running Convolutional Neural Networks (CNNs) on CircuitPython.  It contains code to train models using Tensorflow on computers and convert them to CircuitPython.
+
+> This code was tested with CircuitPython 8 , the mpy file will not work with higher versions of CircuitPython
+
 For more information, please visit: https://ashishware.com/2024/06/29/pipico_digit_classification_cnn/
 
 Here's a table detailing the files and their functions:
