@@ -111,22 +111,35 @@ def predict(image):
     arg_max = np.argmax(layer_5_output)
     return arg_max, layer_5_output[arg_max]
 
-
-def validate_patterns(model):
+def validate():
     patterns = {
-        "1010": np.tile([1, 0], 450).reshape(30, 30),
+        "1010": np.array([[1, 0] * 15] * 30),
         "1111": np.ones((30, 30)),
-        "0101": np.tile([0, 1], 450).reshape(30, 30),
-        "1100": np.tile([1, 1, 0, 0], 225).reshape(30, 30),
+        "0101": np.array([[0, 1] * 15] * 30),
+        "1100": np.array([[1, 1, 0, 0] * 7 + [1, 1]] * 30),
     }
 
     results = [result_0, result_1, result_2, result_3]
+    pattern_keys = list(patterns.keys())
 
-    for i, (pattern_type, expected_result) in enumerate(zip(patterns.keys(), results)):
+    for i in range(len(pattern_keys)):
+        pattern_type = pattern_keys[i]
+        expected_result = results[i]
         pattern = patterns[pattern_type]
         output = predict(pattern)
-        assert np.array_equal(
-            output[0], expected_result
-        ), f"Validation failed for result_{i}"
+
+        # Manually check if all elements are equal
+        output_equal = True
+        for row in range(len(output)):
+            for col in range(len(output[row])):
+                if output[0][row][col] != expected_result[row][col]:
+                    output_equal = False
+                    break
+            if not output_equal:
+                break
+
+        assert output_equal, f"Validation failed for result_{i}"
+
+    print("Assertions passed successfully!")
 
     print("Assertions passed successfully!")
