@@ -100,7 +100,7 @@ def predict(image):
                 conv_sum = np.sum(
                     op_channel
                 )  
-                output[i, j] = relu(conv_sum + biases_1[filter_len])
+                output[i, j] = relu(conv_sum) + biases_1[filter_len]
         layer_3_output.append(output)
 
     layer_4_input = interleave_arrays(
