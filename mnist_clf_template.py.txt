@@ -109,7 +109,7 @@ def predict(image):
     layer_4_output = dense_layer(layer_4_input, weights_2, biases_2)
     layer_5_output = softmax(layer_4_output)
     arg_max = np.argmax(layer_5_output)
-    return arg_max, layer_5_output[arg_max]
+    return arg_max, layer_5_output[arg_max],layer_5_output
 
 def validate():
     patterns = {
@@ -126,7 +126,7 @@ def validate():
         pattern_type = pattern_keys[i]
         expected_result = results[i]
         pattern = patterns[pattern_type]
-        output = predict(pattern)
+        output = predict(pattern)[2]
 
         # Manually check if all elements are equal
         output_equal = True
