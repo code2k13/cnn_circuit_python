@@ -112,20 +112,18 @@ def predict(image):
     return arg_max, layer_5_output[arg_max],layer_5_output
 
 def validate():
-    patterns = {
-        "1010": np.array([[1, 0] * 15] * 30),
-        "1111": np.ones((30, 30)),
-        "0101": np.array([[0, 1] * 15] * 30),
-        "1100": np.array([[1, 1, 0, 0] * 7 + [1, 1]] * 30),
-    }
+    patterns = [
+        np.array([[1, 0] * 15] * 30),
+        np.ones((30, 30)),
+        np.array([[0, 1] * 15] * 30),
+        np.array([[1, 1, 0, 0] * 7 + [1, 1]] * 30),
+    ]
 
     results = [result_0, result_1, result_2, result_3]
-    pattern_keys = list(patterns.keys())
 
-    for i in range(len(pattern_keys)):
-        pattern_type = pattern_keys[i]
+    for i in range(len(patterns)):
         expected_result = results[i]
-        pattern = patterns[pattern_type]
+        pattern = patterns[i]
         output = predict(pattern)[2]
 
         output_equal = True
