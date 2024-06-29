@@ -1,0 +1,132 @@
+import numpy as np
+
+##### weights sections starts #####
+
+##### weights sections ends #####
+
+
+##### validation sections starts #####
+
+##### validation sections ends #####
+
+
+def relu(x):
+    return np.maximum(0, x)
+
+
+def convolve_2d_layer(image, filter, bias):
+    output_height = image.shape[0] - filter.shape[0] + 1
+    output_width = image.shape[1] - filter.shape[1] + 1
+    output = np.zeros((output_height, output_width))
+    for i in range(output_height):
+        for j in range(output_width):
+            conv_sum = np.sum(image[i : i + 3, j : j + 3] * filter) + bias
+            output[i, j] = relu(conv_sum)
+
+    return output
+
+
+def max_pool_2d(input_array, pool_size):
+    output_height = input_array.shape[0] // pool_size
+    output_width = input_array.shape[1] // pool_size
+    output = np.zeros((output_height, output_width))
+
+    for i in range(output_height):
+        for j in range(output_width):
+            pool_region = input_array[
+                i * pool_size : (i + 1) * pool_size, j * pool_size : (j + 1) * pool_size
+            ]
+            output[i, j] = np.max(pool_region)
+
+    return output
+
+
+def flatten_and_concatenate(array1, array2):
+    flattened_array1 = array1.flatten()
+    flattened_array2 = array2.flatten()
+
+    flattened_combined_array = np.concatenate((flattened_array1, flattened_array2))
+    return flattened_combined_array
+
+
+def interleave_arrays(array1, array2):
+    flattened_array1 = array1.flatten()
+    flattened_array2 = array2.flatten()
+
+    interleaved_array = np.zeros(
+        len(flattened_array1) + len(flattened_array2), dtype=flattened_array1.dtype
+    )
+    interleaved_array[0::2] = flattened_array1
+    interleaved_array[1::2] = flattened_array2
+
+    return interleaved_array
+
+
+def dense_layer(input_vector, weights, biases):
+    output = np.dot(input_vector, weights) + biases
+    return output
+
+
+def softmax(x):
+    x -= np.max(x)
+    exp_x = np.exp(x)
+    return exp_x / np.sum(exp_x)
+
+
+def predict(image):
+    layer_1_output = []
+    for i in range(0, len(weights_0)):
+        x = convolve_2d_layer(image, weights_0[i], biases_0[i])
+        layer_1_output.append(x)
+
+    layer_2_output = []
+    for i in range(0, len(layer_1_output)):
+        x = max_pool_2d(layer_1_output[i], 2)
+        layer_2_output.append(x)
+
+    layer_3_output = []
+    for filter_len in range(0, 2):  # 2 times
+        output = np.zeros((12, 12), dtype=np.float)
+        for i in range(12):
+            for j in range(12):
+                op_channel = np.zeros((3, 3))
+                for channel in range(0, 8):
+                    x = (
+                        layer_2_output[channel][i : i + 3, j : j + 3]
+                        * weights_1[filter_len][channel]
+                    )
+                    op_channel = op_channel + x
+
+                conv_sum = np.sum(
+                    op_channel
+                )  
+                output[i, j] = relu(conv_sum) + biases_1[filter_len]
+        layer_3_output.append(output)
+
+    layer_4_input = interleave_arrays(
+        layer_3_output[0], layer_3_output[1]
+    )  
+    layer_4_output = dense_layer(layer_4_input, weights_2, biases_2)
+    layer_5_output = softmax(layer_4_output)
+    arg_max = np.argmax(layer_5_output)
+    return arg_max, layer_5_output[arg_max]
+
+
+def validate_patterns(model):
+    patterns = {
+        "1010": np.tile([1, 0], 450).reshape(30, 30),
+        "1111": np.ones((30, 30)),
+        "0101": np.tile([0, 1], 450).reshape(30, 30),
+        "1100": np.tile([1, 1, 0, 0], 225).reshape(30, 30),
+    }
+
+    results = [result_0, result_1, result_2, result_3]
+
+    for i, (pattern_type, expected_result) in enumerate(zip(patterns.keys(), results)):
+        pattern = patterns[pattern_type]
+        output = predict(pattern)
+        assert np.array_equal(
+            output[0], expected_result
+        ), f"Validation failed for result_{i}"
+
+    print("Assertions passed successfully!")
