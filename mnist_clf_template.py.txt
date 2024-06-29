@@ -1,4 +1,4 @@
-import numpy as np
+from ulab import numpy as np
 
 ##### weights sections starts #####
 
